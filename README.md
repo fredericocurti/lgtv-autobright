@@ -19,40 +19,32 @@ Automatic backlight control for LG TVs on macOS. Discovers your TV on the local 
 
 ## Requirements
 
-- macOS (uses system Python for mDNS and WebOS connections)
+- macOS
 - Python 3.10+
 - An LG TV with WebOS on the same network
 
 ## Installation
 
 ```bash
-git clone https://github.com/yourusername/lgtv-autobright.git
+git clone https://github.com/fredericocurti/lgtv-autobright.git
 cd lgtv-autobright
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
 ```
 
-### Dependencies
-
-The app also requires [lgtv-autofind](https://github.com/yourusername/lgtv-autofind) for TV discovery. Install it in the same venv:
+`bscpylgtv` must also be available to system Python for TV communication:
 
 ```bash
-pip install -e ../lgtv-autofind  # or wherever your copy lives
+/usr/bin/python3 -m pip install --user bscpylgtv
 ```
 
-> **Note:** TV discovery and WebOS communication are run via `/usr/bin/python3` (system Python) because Homebrew/venv Python lacks the Apple entitlements needed for mDNS port binding and local network access.
+> **Why system Python?** macOS restricts mDNS port binding and local network websocket access to binaries with Apple entitlements. Homebrew/venv Python doesn't have these, so discovery and TV commands are run via `/usr/bin/python3` automatically.
 
 ## Usage
 
 ```bash
 source .venv/bin/activate
-python -m lgtv_autobright.app
-```
-
-Or if installed:
-
-```bash
 lgtv-autobright
 ```
 
@@ -70,17 +62,17 @@ The curve wraps around midnight and updates are sent to the TV every 5 minutes. 
 
 ## Architecture
 
-| File | Purpose |
-|---|---|
-| `app.py` | PyQt6 main window, system tray, UI |
-| `brightness.py` | Curve interpolation, scheduler, config |
-| `tv.py` | TV connection via system Python subprocess |
-| `discovery.py` | mDNS TV discovery via system Python subprocess |
-| `scan_ui.py` | Standalone connect/settings UI (legacy) |
+```
+lgtv_autobright/
+  app.py          PyQt6 main window, system tray, curve chart
+  brightness.py   Curve interpolation, scheduler, config
+  tv.py           TV connection via system Python subprocess
+  discovery.py    mDNS + AirPlay TV discovery (self-contained)
+```
 
 ## Config
 
-Settings are stored at `~/.config/lgtv-autobright/config.json`. The WebOS client key is stored in `.aiopylgtv.sqlite` in the working directory.
+Settings are stored at `~/.config/lgtv-autobright/config.json`. The WebOS pairing key is stored in `.aiopylgtv.sqlite` in the working directory.
 
 ## License
 
