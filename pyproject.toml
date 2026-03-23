@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lgtv-autobright"
+version = "0.1.0"
+description = "Smart brightness controller for LG TVs with macOS system tray"
+requires-python = ">=3.10"
+dependencies = [
+    "bscpylgtv",
+    "lgtv-autofind",
+    "PyQt6",
+]
+
+[project.scripts]
+lgtv-autobright = "lgtv_autobright.app:main"
